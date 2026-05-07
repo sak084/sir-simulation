@@ -50,31 +50,55 @@ class SEVIR:
         return daysList
 
     # graphing the lists using matplotlib
-    def plot(self, daysList, susceptible, exposed, vaccinated, infected, recovered):
-        plt.plot(daysList, susceptible, label = "Susceptible")
-        plt.plot(daysList, exposed, label = "Exposed")
-        plt.plot(daysList, vaccinated, label = "Vaccinated")
-        plt.plot(daysList, infected, label = "Infected")
-        plt.plot(daysList, recovered, label = "Recovered")
-        plt.xlabel("Days")
-        plt.ylabel("Population")
-        plt.title("Initial SEVIR Model with Estimated Parameters")
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+    def plot(self, ax, daysList, susceptible, exposed, vaccinated, infected, recovered):
+        ax.plot(daysList, susceptible, label = "Susceptible")
+        ax.plot(daysList, exposed, label = "Exposed")
+        ax.plot(daysList, vaccinated, label = "Vaccinated")
+        ax.plot(daysList, infected, label = "Infected")
+        ax.plot(daysList, recovered, label = "Recovered")
+        ax.set_xlabel("Days", fontsize = 10)
+        ax.set_ylabel("Population", fontsize = 10)
+        ax.legend()
+        ax.grid(True)
 
-# main method that calls the methods methodically, eventually producing a graph
+# main method that plots four sevir graphs with various vaccination rates
 def main():
-    model1 = SEVIR(100000, 0.35, 0.2, 0.1, 0.005, 100, 59700, 225, 20000, 75, 20000) 
+    # making four separate subplots
+    fig, axs = plt.subplots(2,2)
+    plt.title = "SEVIR Model Comparison with vaccination rates"
+
+    # subplot #1 (upper left)- 5% vaccination rate
+    model1 = SEVIR(100000, 0.35, 0.2, 0.1, 0.05, 100, 59700, 225, 20000, 75, 20000) 
     s1, e1, v1, i1, r1 = model1.addCounts()
     daysList1 = model1.getDaysList()
-    model1.plot(daysList1, s1, e1, v1, i1, r1)
+    model1.plot(axs[0][0], daysList1, s1, e1, v1, i1, r1)
+    axs[0][0].set_title("5% vaccination rate", fontsize = 10)
 
-    #todo: generate more plots to compare vaccination scenarios
+    # subplot #2 (upper right)- 10% vaccination rate
+    model2 = SEVIR(100000, 0.35, 0.2, 0.1, 0.1, 100, 59700, 225, 20000, 75, 20000) 
+    s2, e2, v2, i2, r2 = model2.addCounts()
+    daysList2 = model2.getDaysList()
+    model2.plot(axs[0][1], daysList2, s2, e2, v2, i2, r2)
+    axs[0][1].set_title("10% vaccination rate", fontsize = 10)
+
+    # subplot #3 (lower left)- 30% vaccination rate
+    model3 = SEVIR(100000, 0.35, 0.2, 0.1, 0.3, 100, 59700, 225, 20000, 75, 20000) 
+    s3, e3, v3, i3, r3 = model3.addCounts()
+    daysList3 = model3.getDaysList()
+    model3.plot(axs[1][0], daysList3, s3, e3, v3, i3, r3)
+    axs[1][0].set_title("30% vaccination rate", fontsize = 10)
+
+    # subplot #4 (lower right)- 70% vaccination rate
+    model4 = SEVIR(100000, 0.35, 0.2, 0.1, 0.7, 100, 59700, 225, 20000, 75, 20000) 
+    s4, e4, v4, i4, r4 = model4.addCounts()
+    daysList4 = model4.getDaysList()
+    model4.plot(axs[1][1], daysList4, s4, e4, v4, i4, r4)
+    axs[1][1].set_title("70% vaccination rate", fontsize = 10)
+
+    plt.show()
+
+    #todo: make the arguments more realistic with real data
 
 # run main() if the file is executed properly
 if __name__ == "__main__":
     main()
-
-
-    
