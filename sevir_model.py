@@ -1,20 +1,22 @@
 import matplotlib.pyplot as plt
 
 class SEVIR:
-    # constructor that initializes relevant rates, population, days, and initial numbers
-    # todo: break this up to make it more readable if possible
-    def __init__ (self, N, infectionRate, incubationRate, recoverRate, vaccinationRate, days, initialSusceptible, initialExposed, initialVaccinated, initialInfected, initialRecovered):
-        self.N = N
-        self.infectionRate = infectionRate
-        self.incubationRate = incubationRate
-        self.recoverRate = recoverRate
+    # initializes constant variables for sveir model
+    infectionRate = 0.51
+    incubationRate = 0.15
+    recoveryRate = 0.10
+    days = 14 #show graph over a two-week period
+
+    N = 1000
+    initialSusceptible = 100
+    initialExposed = 200
+    initialVaccinated = 100
+    initialInfected = 200
+    initialRecovered = 400
+
+    # constructor that initializes the vaccination rate
+    def __init__ (self, vaccinationRate):
         self.vaccinationRate = vaccinationRate
-        self.days = days
-        self.initialSusceptible = initialSusceptible
-        self.initialExposed = initialExposed
-        self.initialVaccinated = initialVaccinated
-        self.initialInfected = initialInfected
-        self.initialRecovered = initialRecovered
 
     # calculates, S, E, V, I, and R values for each day
     # appends the values to a list to be graphed by plot()
@@ -29,9 +31,9 @@ class SEVIR:
             # calculating rate of change per day, respectively
             dS = -(self.infectionRate * infected[-1] * susceptible[-1])/self.N - self.vaccinationRate * susceptible [-1]
             dE = (self.infectionRate * infected[-1] * susceptible[-1]/self.N) - self.incubationRate * exposed [-1]
-            dI = self.incubationRate * exposed[-1] - self.recoverRate * infected[-1]
+            dI = self.incubationRate * exposed[-1] - self.recoveryRate * infected[-1]
             dV = self.vaccinationRate * susceptible[-1]
-            dR = self.recoverRate * infected[-1]
+            dR = self.recoveryRate * infected[-1]
 
             # adding new numbers to the list, which shows number of susceptible, infected, and recovered by day
             susceptible.append(susceptible[-1] + dS)
@@ -68,36 +70,34 @@ def main():
     plt.title = "SEVIR Model Comparison with vaccination rates"
 
     # subplot #1 (upper left)- 5% vaccination rate
-    model1 = SEVIR(100000, 0.35, 0.2, 0.1, 0.05, 100, 59700, 225, 20000, 75, 20000) 
+    model1 = SEVIR(0.05) 
     s1, e1, v1, i1, r1 = model1.addCounts()
     daysList1 = model1.getDaysList()
     model1.plot(axs[0][0], daysList1, s1, e1, v1, i1, r1)
     axs[0][0].set_title("5% vaccination rate", fontsize = 10)
 
     # subplot #2 (upper right)- 10% vaccination rate
-    model2 = SEVIR(100000, 0.35, 0.2, 0.1, 0.1, 100, 59700, 225, 20000, 75, 20000) 
+    model2 = SEVIR(0.10) 
     s2, e2, v2, i2, r2 = model2.addCounts()
     daysList2 = model2.getDaysList()
     model2.plot(axs[0][1], daysList2, s2, e2, v2, i2, r2)
     axs[0][1].set_title("10% vaccination rate", fontsize = 10)
 
     # subplot #3 (lower left)- 30% vaccination rate
-    model3 = SEVIR(100000, 0.35, 0.2, 0.1, 0.3, 100, 59700, 225, 20000, 75, 20000) 
+    model3 = SEVIR(0.30) 
     s3, e3, v3, i3, r3 = model3.addCounts()
     daysList3 = model3.getDaysList()
     model3.plot(axs[1][0], daysList3, s3, e3, v3, i3, r3)
     axs[1][0].set_title("30% vaccination rate", fontsize = 10)
 
     # subplot #4 (lower right)- 70% vaccination rate
-    model4 = SEVIR(100000, 0.35, 0.2, 0.1, 0.7, 100, 59700, 225, 20000, 75, 20000) 
+    model4 = SEVIR(0.70) 
     s4, e4, v4, i4, r4 = model4.addCounts()
     daysList4 = model4.getDaysList()
     model4.plot(axs[1][1], daysList4, s4, e4, v4, i4, r4)
     axs[1][1].set_title("70% vaccination rate", fontsize = 10)
 
     plt.show()
-
-    #todo: make the arguments more realistic with real data
 
 # run main() if the file is executed properly
 if __name__ == "__main__":
